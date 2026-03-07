@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind and daisyui links -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <div class="navbar bg-base-100 shadow-sm">
+            <div class="flex-1">
+                <div class="flex items-center gap-2">
+                    <img src="./images/github-logo_25231 1.png" alt="">
+                    <h2 class="text-xl font-semibold">GitHub Issues Tracker</h2>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" placeholder="Search issues..." 
+                       class="input input-bordered w-24 md:w-auto focus:outline-none focus:ring-2 focus:ring-[#4A00FF] focus:border-[#4A00FF]" />
+
+                <button class="btn btn-primary">+New Issue</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-11/12 mx-auto">
+        <div class="shadow-sm mt-10 flex p-5 gap-5">
+            <button onclick="loadData()" class="btn btn-primary btn-soft">All</button>
+            <button onclick="openData()" class="btn btn-primary btn-soft">Open</button>
+            <button onclick="closedData()" class="btn btn-primary btn-soft">Closed</button>
+        </div>
+
+        <section>
+            <div id="all-issues-container" class="shadow-sm grid md:grid-cols-4 grid-cols-1 mt-10 p-5 gap-6">
+            </div>
+        </section>
+    </main>
+    <script src="./homepage.js"></script>
+</body>
+
+</html>
