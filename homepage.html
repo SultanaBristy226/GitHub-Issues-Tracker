@@ -20,7 +20,6 @@
             border: none !important;
             outline: none !important;
         }
-        
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -30,7 +29,7 @@
     </style>
 </head>
 
-<body>
+<body class="bg-gray-50">
     <!-- Navbar -->
     <div class="navbar bg-white shadow-sm px-4 sticky top-0 z-10">
         <div class="flex-1">
@@ -42,7 +41,7 @@
         <div class="flex items-center gap-3">
             <!-- Search Bar -->
             <div class="relative">
-                <i id="searchIcon" class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-[#64748B] text-sm"></i>
+                <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
                 <input type="text" id="searchInput" placeholder="Search issues..." 
                        class="w-40 sm:w-48 md:w-64 pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4A00FF] focus:border-transparent">
             </div>
@@ -56,64 +55,71 @@
 
     <!-- Modal -->
     <dialog id="issueModal" class="modal modal-bottom sm:modal-middle">
-        <div class="modal-box border-none outline-none">
-            <h3 class="text-lg font-bold" id="modalTitle"></h3>
-            <div class="flex items-center gap-4 mt-2 mb-4">
-                <span id="modalStatus" class="text-sm font-medium"></span>
-                <p class="text-sm text-gray-600">Opened by <span id="modalAuthor"></span> • <span id="modalDate"></span></p>
+        <div class="modal-box p-6 border-none outline-none">
+            <h3 class="text-xl font-bold text-gray-800" id="modalTitle"></h3>
+            
+            <div class="flex items-center gap-4 mt-3 mb-4">
+                <span id="modalStatus" class="px-3 py-1 text-xs font-medium rounded-full"></span>
+                <p class="text-sm text-gray-600">
+                    Opened by <span id="modalAuthor"></span> • <span id="modalDate"></span>
+                </p>
             </div>
-            <div class="flex gap-2 mb-4 flex-wrap" id="modalLabels"></div>
-            <p class="text-gray-600 mb-4" id="modalDescription"></p>
-            <div class="flex justify-between items-center pt-4">
+            
+            <div class="flex gap-2 mb-4 flex-wrap items-center" id="modalLabels"></div>
+            
+            <p class="text-gray-700 mb-6" id="modalDescription"></p>
+            
+            <div class="flex justify-between items-center border-t border-gray-200 pt-4">
                 <div>
                     <p class="text-sm text-gray-500">Assignee:</p>
-                    <p class="font-bold" id="modalAssignee"></p>
+                    <p class="font-semibold text-gray-800" id="modalAssignee"></p>
                 </div>
-                <div>
+                <div class="text-right">
                     <p class="text-sm text-gray-500">Priority:</p>
-                    <div id="modalPriority"></div>
+                    <div id="modalPriority" class="mt-1"></div>
                 </div>
             </div>
-            <div class="modal-action">
+            
+            <div class="modal-action mt-4">
                 <form method="dialog">
-                    <button class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none outline-none">Close</button>
+                    <button class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none outline-none px-8">Close</button>
                 </form>
             </div>
         </div>
     </dialog>
 
-    <main class="w-11/12 mx-auto">
+    <main class="w-11/12 max-w-7xl mx-auto py-6">
         <!-- Filter Buttons -->
-        <div class="shadow-sm mt-10 flex p-5 gap-5">
-            <button id="allBtn" class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none">All</button>
-            <button id="openBtn" class="btn border border-gray-300 hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF]">Open</button>
-            <button id="closedBtn" class="btn border border-gray-300 hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF]">Closed</button>
+        <div class="bg-white rounded-lg shadow-sm p-2 mb-6 inline-flex flex-wrap gap-1">
+            <button id="allBtn" class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none px-6 py-1.5 text-sm">All</button>
+            <button id="openBtn" class="btn border border-gray-300 bg-white hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF] px-6 py-1.5 text-sm">Open</button>
+            <button id="closedBtn" class="btn border border-gray-300 bg-white hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF] px-6 py-1.5 text-sm">Closed</button>
         </div>
         
         <!-- Stats Card -->
-        <div class="card card-body shadow-sm">
-            <div class="flex justify-between items-center gap-2">
-                <div class="flex gap-3 items-center">
-                    <div><img src="./images/Aperture.png" alt="Aperture" class="w-10"></div>
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="./images/Aperture.png" alt="Aperture" class="w-10 h-10">
                     <div>
-                        <h2 id="totalIssuesCount" class="text-xl font-semibold">0 Issues</h2>
-                        <p class="text-gray-500">Track and manage your project issues</p>
+                        <h2 id="totalIssuesCount" class="text-xl font-semibold text-gray-800">0 Issues</h2>
+                        <p class="text-sm text-gray-500">Track and manage your project issues</p>
                     </div>
                 </div>
-                <div class="flex justify-between items-center gap-5">
-                    <p class="text-gray-600 text-[16px] flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span>Open</p>
-                    <p class="text-gray-600 text-[16px] flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span>Closed</p>
+                <div class="flex items-center gap-4 text-sm">
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Open</span>
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Closed</span>
                 </div>
             </div>
         </div>
 
         <!-- Issues Grid -->
         <section>
-            <div id="issuesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-cols-1 mt-10 p-5 gap-6"></div>
+            <div id="issuesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
             
             <!-- Loading Spinner -->
-            <div id="loadingSpinner" class="flex justify-center items-center my-20 hidden">
-                <span class="loading loading-spinner loading-xl"></span>
+            <div id="loadingSpinner" class="flex justify-center items-center py-16 hidden">
+                <span class="loading loading-spinner loading-xl text-[#4A00FF]"></span>
             </div>
         </section>
     </main>
