@@ -1,6 +1,6 @@
 let allIssues = [], 
 filteredIssues = [],
- currentTab = 'all';
+currentTab = 'all';
 
 const formatAuthor = a => a ? a.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ') : 'Unknown';
 
@@ -11,10 +11,19 @@ const getStatusImage = s => s === 'open' ? './images/Open-Status.png' : './image
 const getLabelIcon = l => ({bug:'fa-bug', enhancement:'fa-star', documentation:'fa-book', 'help wanted':'fa-handshake', 'good first issue':'fa-seedling'})[l?.toLowerCase()] || 'fa-tag';
 
 const getLabelClass = l => ({
-    bug:'bg-[#FECACA] text-[#EF4444]', enhancement:'bg-green-100 text-green-700',
-    documentation:'bg-blue-100 text-blue-700', 'help wanted':'bg-purple-100 text-purple-700',
+    bug:'bg-[#FECACA] text-[#EF4444]', 
+    enhancement:'bg-green-100 text-green-700',
+    documentation:'bg-blue-100 text-blue-700', 
+    'help wanted':'bg-purple-100 text-purple-700',
     'good first issue':'bg-green-100 text-green-700'
 })[l?.toLowerCase()] || 'bg-gray-100 text-gray-700';
+
+const removeActiveTab = () => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#4A00FF]', 'text-white', 'border-none');
+        btn.classList.add('border', 'border-gray-300', 'bg-white', 'text-gray-600');
+    });
+};
 
 const toggleSpinner = s => {
     const sp = document.getElementById("loadingSpinner"), g = document.getElementById("issuesGrid");
@@ -29,9 +38,18 @@ const updateCount = () => {
 
 const searchIssues = () => {
     const q = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
-    filteredIssues = q ? allIssues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.labels?.some(l => l.toLowerCase().includes(q))) : [...allIssues];
-    if (currentTab === 'open') filteredIssues = filteredIssues.filter(i => i.status === 'open');
-    if (currentTab === 'closed') filteredIssues = filteredIssues.filter(i => i.status === 'closed');
+    
+    let baseIssues = [];
+    if (currentTab === 'all') baseIssues = [...allIssues];
+    else if (currentTab === 'open') baseIssues = allIssues.filter(i => i.status === 'open');
+    else if (currentTab === 'closed') baseIssues = allIssues.filter(i => i.status === 'closed');
+    
+    filteredIssues = q ? baseIssues.filter(i => 
+        i.title?.toLowerCase().includes(q) || 
+        i.description?.toLowerCase().includes(q) || 
+        i.labels?.some(l => l.toLowerCase().includes(q))
+    ) : [...baseIssues];
+    
     updateCount();
     displayIssues();
 };
@@ -39,7 +57,10 @@ const searchIssues = () => {
 const displayIssues = () => {
     const grid = document.getElementById('issuesGrid');
     if (!grid) return;
-    if (!filteredIssues.length) { grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">No issues found</div>'; return; }
+    if (!filteredIssues.length) { 
+        grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">No issues found</div>'; 
+        return; 
+    }
     
     grid.innerHTML = filteredIssues.map(i => {
         const labels = i.labels?.map(l => {
@@ -84,12 +105,17 @@ const showModal = (i) => {
     const statusSpan = document.getElementById('modalStatus');
     statusSpan.innerHTML = '';
     const span = document.createElement('span');
-    span.className = 'text-sm font-medium ' + (i.status === 'open' ? 'text-green-600' : 'text-purple-600');
+    span.className = `px-3 py-1 text-xs font-medium rounded-full ${i.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'}`;
     span.textContent = i.status === 'open' ? 'OPEN' : 'CLOSED';
     statusSpan.appendChild(span);
     
     const priorityMap = {high:'High', medium:'Medium', low:'Low'};
-    document.getElementById('modalPriority').innerHTML = `<img src="./images/Status=${priorityMap[i.priority?.toLowerCase()] || 'High'}.png" class="h-6">`;
+    const priorityText = priorityMap[i.priority?.toLowerCase()] || 'High';
+    const priorityColor = i.priority?.toLowerCase() === 'high' ? 'bg-red-100 text-red-700' : 
+                         i.priority?.toLowerCase() === 'medium' ? 'bg-yellow-100 text-yellow-700' : 
+                         i.priority?.toLowerCase() === 'low' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700';
+    
+    document.getElementById('modalPriority').innerHTML = `<span class="px-3 py-1 text-xs font-medium rounded-full ${priorityColor}">${priorityText}</span>`;
     
     const labelsDiv = document.getElementById('modalLabels');
     labelsDiv.innerHTML = '';
@@ -102,7 +128,12 @@ const showModal = (i) => {
             span.innerHTML = l === 'documentation' ? '<i class="fa-solid fa-book mr-1"></i>DOCUMENTATION' : '<i class="fa-solid fa-seedling mr-1"></i>GOOD FIRST ISSUE';
             labelsDiv.appendChild(span);
         } else {
-            labelsDiv.innerHTML += `<img src="./images/Name=${l}.png" class="h-6">`;
+            const img = document.createElement('img');
+            img.src = `./images/Name=${l}.png`;
+            img.alt = l;
+            img.className = 'h-6';
+            img.onerror = () => img.style.display = 'none';
+            labelsDiv.appendChild(img);
         }
     });
     
@@ -113,39 +144,50 @@ const loadAllIssues = () => {
     toggleSpinner(true);
     fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
         .then(r => r.json())
-        .then(j => { allIssues = j.data || []; filteredIssues = [...allIssues]; updateCount(); displayIssues(); toggleSpinner(false); })
-        .catch(e => { console.error(e); toggleSpinner(false); });
+        .then(j => { 
+            allIssues = j.data || []; 
+            filteredIssues = [...allIssues]; 
+            updateCount(); 
+            displayIssues(); 
+            toggleSpinner(false); 
+        })
+        .catch(e => { 
+            console.error(e); 
+            toggleSpinner(false); 
+        });
 };
 
 const filterAll = () => {
     currentTab = 'all';
-    document.getElementById('allBtn')?.classList.add('btn-primary');
-    document.getElementById('openBtn')?.classList.remove('btn-primary');
-    document.getElementById('closedBtn')?.classList.remove('btn-primary');
-    filteredIssues = [...allIssues]; updateCount(); displayIssues();
+    removeActiveTab();
+    const allBtn = document.getElementById('allBtn');
+    allBtn.classList.remove('border', 'border-gray-300', 'bg-white', 'text-gray-600');
+    allBtn.classList.add('bg-[#4A00FF]', 'text-white', 'border-none');
+    searchIssues();
 };
 
 const filterOpen = () => {
     currentTab = 'open';
-    document.getElementById('allBtn')?.classList.remove('btn-primary');
-    document.getElementById('openBtn')?.classList.add('btn-primary');
-    document.getElementById('closedBtn')?.classList.remove('btn-primary');
-    filteredIssues = allIssues.filter(i => i.status === 'open'); updateCount(); displayIssues();
+    removeActiveTab();
+    const openBtn = document.getElementById('openBtn');
+    openBtn.classList.remove('border', 'border-gray-300', 'bg-white', 'text-gray-600');
+    openBtn.classList.add('bg-[#4A00FF]', 'text-white', 'border-none');
+    searchIssues();
 };
 
 const filterClosed = () => {
     currentTab = 'closed';
-    document.getElementById('allBtn')?.classList.remove('btn-primary');
-    document.getElementById('openBtn')?.classList.remove('btn-primary');
-    document.getElementById('closedBtn')?.classList.add('btn-primary');
-    filteredIssues = allIssues.filter(i => i.status === 'closed'); updateCount(); displayIssues();
+    removeActiveTab();
+    const closedBtn = document.getElementById('closedBtn');
+    closedBtn.classList.remove('border', 'border-gray-300', 'bg-white', 'text-gray-600');
+    closedBtn.classList.add('bg-[#4A00FF]', 'text-white', 'border-none');
+    searchIssues();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('allBtn')?.addEventListener('click', filterAll);
     document.getElementById('openBtn')?.addEventListener('click', filterOpen);
     document.getElementById('closedBtn')?.addEventListener('click', filterClosed);
-    document.getElementById('searchBtn')?.addEventListener('click', e => { e.preventDefault(); searchIssues(); });
-    document.getElementById('searchInput')?.addEventListener('keypress', e => { if (e.key === 'Enter') searchIssues(); });
+    document.getElementById('searchInput')?.addEventListener('input', searchIssues);
     loadAllIssues();
 });

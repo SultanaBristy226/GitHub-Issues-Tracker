@@ -16,7 +16,7 @@
             border: none !important;
             outline: none !important;
         }
-        .btn {
+        .btn, button {
             border: none !important;
             outline: none !important;
         }
@@ -30,6 +30,7 @@
 </head>
 
 <body class="bg-gray-50">
+
     <!-- Navbar -->
     <div class="navbar bg-white shadow-sm px-4 sticky top-0 z-10">
         <div class="flex-1">
@@ -39,14 +40,12 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <!-- Search Bar -->
             <div class="relative">
                 <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
                 <input type="text" id="searchInput" placeholder="Search issues..." 
-                       class="w-40 sm:w-48 md:w-64 pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4A00FF] focus:border-transparent">
+                       class="w-40 sm:w-48 md:w-64 pl-8 pr-3 py-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#4A00FF] focus:border-transparent">
             </div>
-            <!-- New Issue Button -->
-            <button class="inline-flex items-center justify-center px-3 py-1.5 bg-[#4A00FF] text-white rounded-lg cursor-pointer text-sm hover:bg-[#3a00cc] border-none">
+            <button class="inline-flex items-center justify-center px-8 py-2.5 bg-[#4A00FF] text-white rounded-md text-sm font-medium hover:bg-[#3a00cc] border-none">
                 <i class="fa-solid fa-plus mr-1"></i>
                 <span class="hidden sm:inline">New issue</span>
             </button>
@@ -82,18 +81,19 @@
             
             <div class="modal-action mt-4">
                 <form method="dialog">
-                    <button class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none outline-none px-8">Close</button>
+                    <button class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none outline-none px-8 py-2.5 rounded-md">Close</button>
                 </form>
             </div>
         </div>
     </dialog>
 
     <main class="w-11/12 max-w-7xl mx-auto py-6">
+
         <!-- Filter Buttons -->
-        <div class="bg-white rounded-lg shadow-sm p-2 mb-6 inline-flex flex-wrap gap-1">
-            <button id="allBtn" class="btn bg-[#4A00FF] text-white hover:bg-[#3a00cc] border-none px-6 py-1.5 text-sm">All</button>
-            <button id="openBtn" class="btn border border-gray-300 bg-white hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF] px-6 py-1.5 text-sm">Open</button>
-            <button id="closedBtn" class="btn border border-gray-300 bg-white hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF] px-6 py-1.5 text-sm">Closed</button>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button id="allBtn" class="tab-btn px-8 py-2.5 text-sm font-medium rounded-md bg-[#4A00FF] text-white border-none">All</button>
+            <button id="openBtn" class="tab-btn px-8 py-2.5 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF]">Open</button>
+            <button id="closedBtn" class="tab-btn px-8 py-2.5 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-[#4A00FF] hover:text-white hover:border-[#4A00FF]">Closed</button>
         </div>
         
         <!-- Stats Card -->
@@ -122,6 +122,7 @@
                 <span class="loading loading-spinner loading-xl text-[#4A00FF]"></span>
             </div>
         </section>
+
     </main>
     
     <script src="./homepage.js"></script>
